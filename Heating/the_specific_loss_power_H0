@@ -1,0 +1,39 @@
+function the_specific_loss_power_H0
+
+miu=1.32*10^(-6);
+
+tao0=10^(-9);
+
+kFe2O3=1.6*10^4;
+
+kb=1.38*10^(-20);
+
+d=7*10^(-9);
+
+miu0=4*pi*10^(-7);
+
+X0=1.8*10^(-4);
+
+T=310;
+
+f=500000;
+
+H0=1e3:1e4;
+
+v=pi.*d.^3./6;
+
+EA=kFe2O3.*v;
+
+taoN=tao0.*exp(EA./(kb.*T));
+taoB=3.*miu.*v/(kb.*T);
+tao=1/(1./taoN+1./taoB);
+
+SLP=pi.*miu0.*X0.*H0.^2.*f.*(2.*pi.*f.*tao./(1+(2.*pi.*f.*tao).^2));
+
+plot(H0,SLP,'LineWidth',3)
+grid on
+axis([1e3 1e4 0 0.02])
+title('SLP-H0')
+xlabel('Mag-Field Strength(A/m)')
+ylabel('SLP(W/g)')
+set(gca,'FontSize',16)

@@ -1,0 +1,24 @@
+function y=deterministic_ferritin_alpha(t,y)
+
+global alpha
+
+% Parameters
+
+%k_on=0.026;
+%k_off=1/420;
+%a=k_on/k_off;
+%p=0.22;
+%alpha=1/(2*a+a+1)+p.*(1-1/(2*a+a+1));
+v=1/60;
+T5_con=1e-8;
+g_con=10;
+km=1.5e-12;
+beta1=log(2)/180;
+k=1/180;
+beta2=0.00026;
+beta3=1/7200;
+
+% Equations
+
+y=[alpha*v*T5_con*g_con/(km+T5_con)-beta1.*y(1)-beta2;
+    k*y(1)-beta3*y(2)-beta2];

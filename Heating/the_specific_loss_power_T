@@ -1,0 +1,40 @@
+function the_specific_loss_power_T
+
+
+miu=1.32*10^(-6);
+
+tao0=10^(-9);
+
+kFe2O3=1.6*10^4;
+
+kb=1.38*10^(-20);
+
+d=7*10^(-9);
+
+miu0=4*pi*10^(-7);
+
+X0=1.8*10^(-4);
+
+T=293:0.01:315;
+
+f=500000;
+
+H0=0.64*10^(4);
+
+v=pi.*d.^3./6;
+
+EA=kFe2O3.*v;
+
+taoN=tao0.*exp(EA./(kb.*T));
+taoB=3.*miu.*v./(kb.*T);
+tao=1./(1./taoN+1./taoB);
+
+SLP=pi.*miu0.*X0.*H0.^2.*f.*(2.*pi.*f.*tao./(1+(2.*pi.*f.*tao).^2));
+
+plot(T,SLP,'LineWidth',3)
+grid on
+axis([293 315 7.4e-3 8.1e-3])
+title('SLP-Temp')
+xlabel('Temperature(K)')
+ylabel('SLP(W/g)')
+set(gca,'FontSize',16)

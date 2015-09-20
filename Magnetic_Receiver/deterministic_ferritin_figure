@@ -1,0 +1,18 @@
+function deterministic_ferritin_figure
+
+s1=ode45(@deterministic_ferritin,[0,30000],[1e-6,1e-6]);
+
+figure(1) 
+plot(s1.x,s1.y(1,:))
+grid on
+title('the mRNA of ferritin in time scale induced by IPTG')
+ylabel('The concentration of the mRNA of ferrtin(/cell)')
+xlabel('Time(s)')
+
+figure(2)
+plot(s1.x,s1.y(2,:))
+axis([0,30000,0,450])
+grid on
+title('ferritin in time scale induced by IPTG')
+ylabel('The concentration of ferritin(/cell)')
+xlabel('Time(s)')

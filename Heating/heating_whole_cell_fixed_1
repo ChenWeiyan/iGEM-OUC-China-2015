@@ -1,0 +1,613 @@
+function heating_whole_cell_fixed_1
+
+l=2e-6;
+d=0.44e-6;
+
+V=d^2.*l;
+
+slp=2.3424e-20;
+RhoFe2O3=5.32*10^6;
+M=V.*RhoFe2O3;
+mFe2O3=M/1e7;
+cFe2O3=0.71;
+s=4*(d/100)^2+2*(l/1000*d/100);
+kH2O=0.62;
+
+a=zeros(1000,100,100);
+
+
+for i=1:1:1000
+    for j=1:1:100
+        for k=1:1:100
+            if i>250&&i<751&&j>40&&j<61&&k>40&&k<61
+                a(i,j,k)=0;
+            else
+                a(i,j,k)=normrnd(0,1,1);
+            end
+            if  a(i,j,k)>=3.7
+                a(i,j,k)=1;
+            else
+                a(i,j,k)=0;
+            end
+        end
+    end
+end
+
+T=zeros(100,1000,100,100);
+q=zeros(1,6);
+t=1;
+dt=1;
+q2=0;
+
+ t=t+dt;
+while t~=100;
+    for i=1:1:1000
+        for j=1:1:100
+            for k=1:1:100
+                % if here is ferritin molecule
+                if a(i,j,k)==1
+                    plot3(i,j,k,'k','Marker','.','MarkerSize',10)
+                    hold on
+                    grid on
+                       
+                       if i==1&&j==1&&k==1
+                            q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                            q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                            q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                            q(4)=kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2-q(m);
+                            end 
+                        end
+                        if i==1&&j==1&&k==100
+                            q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                            q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                            q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                            q(4)=kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2-q(m);
+                            end
+                        end
+                        if i==1000&&j==1&&k==1
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                              q(4)=kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2-q(m);
+                            end
+                        end
+                        if i==1000&&j==100&&k==1
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                              q(4)=kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2-q(m);
+                            end
+                        end
+                        if i==1&&j==100&&k==1
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                              q(4)=kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2-q(m);
+                            end
+                        end
+                        if i==1&&j==100&&k==100
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                              q(4)=kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2-q(m);
+                            end
+                        end
+                        if i==1000&&j==100&&k==100
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                              q(4)=kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2-q(m);
+                            end
+                        end
+                        if i==1000&&j==1&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(4)=kH2O.*s/2.*T(t-dt,i,j,k);
+                           for m=1:1:4
+                               q2=q2-q(m);
+                           end
+                        end
+                
+                        if i~=1&&i~=1000&&j==1&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                                q2=q2-q(m);
+                           end
+                        end
+                        if 1~=1&&1~=100&&j==100&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i~=1&&i~=100&&j==100&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i~=1&&i~=100&&j==1&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1000&&j==100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1000&&j==1&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1&&j==100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1&&j==1&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1&&j~=1&&j~=100&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1&&j~=1&&j~=100&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1000&&j~=1&&j~=100&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1000&&j~=1&&j~=100&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2-q(m);
+                           end
+                        end
+                        
+                        if i~=1&&i~=1000&&j==1&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i~=1&&i~=1000&&j==100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i~=1&&i~=1000&&j~=1&&j~=100&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(6)=kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i~=1&&i~=1000&&j~=1&&j~=100&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==1&&j~=1&&j~=100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2-q(m);
+                           end
+                        end
+                        if i==100&&j~=1&&j~=100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2-q(m);
+                           end
+                        end
+                        
+                        % temperature inside
+                        if i~=1&&i~=100&&j~=1&&j~=100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           for m=1:1:6
+                               q2=q2+q(m);
+                           end
+                        end
+                        T(1,i,j,k)=slp./(cFe2O3.*mFe2O3);
+                        q1=slp.*dt;
+                        dT=(q1+q2)./(cFe2O3.*mFe2O3);
+                        T(t,i,j,k)=T(t-dt,i,j,k)+dT;
+                
+                else
+                    
+                        if i==1&&j==1&&k==1
+                            q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                            q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                            q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                            q(4)=-kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2+q(m);
+                            end 
+                        end
+                        if i==1&&j==1&&k==100
+                            q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                            q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                            q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                            q(4)=-kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2+q(m);
+                            end
+                        end
+                        if i==1000&&j==1&&k==1
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                              q(4)=-kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2+q(m);
+                            end
+                        end
+                        if i==1000&&j==100&&k==1
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                              q(4)=-kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2+q(m);
+                            end
+                        end
+                        if i==1&&j==100&&k==1
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                              q(4)=-kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2+q(m);
+                            end
+                        end
+                        if i==1&&j==100&&k==100
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                              q(4)=-kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2+q(m);
+                            end
+                        end
+                        if i==1000&&j==100&&k==100
+                              q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                              q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                              q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                              q(4)=-kH2O.*s/2.*T(t-dt,i,j,k);
+                            for m=1:1:4
+                                q2=q2+q(m);
+                            end
+                        end
+                        if i==1000&&j==1&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(4)=-kH2O.*s/2.*T(t-dt,i,j,k);
+                           for m=1:1:4
+                               q2=q2+q(m);
+                           end
+                        end
+                        
+                        if i~=1&&i~=1000&&j==1&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                                q2=q2+q(m);
+                           end
+                        end
+                        if 1~=1&&1~=100&&j==100&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i~=1&&i~=100&&j==100&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i~=1&&i~=100&&j==1&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1000&&j==100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1000&&j==1&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1&&j==100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1&&j==1&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1&&j~=1&&j~=100&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1&&j~=1&&j~=100&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1000&&j~=1&&j~=100&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1000&&j~=1&&j~=100&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=-kH2O.*s/3.*T(t-dt,i,j,k);
+                           for m=1:1:5
+                               q2=q2+q(m);
+                           end
+                        end
+                        
+                        if i~=1&&i~=1000&&j==1&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=-kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i~=1&&i~=1000&&j==100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=-kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i~=1&&i~=1000&&j~=1&&j~=100&&k==100
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(6)=-kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i~=1&&i~=1000&&j~=1&&j~=100&&k==1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=-kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==1&&j~=1&&j~=100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=-kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2+q(m);
+                           end
+                        end
+                        if i==100&&j~=1&&j~=100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=-kH2O.*s*5/6.*T(t-dt,i,j,k);
+                           for m=1:1:6
+                               q2=q2+q(m);
+                           end
+                        end
+                        
+                        if i~=1&&i~=100&&j~=1&&j~=100&&k~=100&&k~=1
+                           q(1)=(T(t-dt,i,j,k)-T(t-dt,i-1,j,k)).*kH2O.*s/6;
+                           q(2)=(T(t-dt,i,j,k)-T(t-dt,i+1,j,k)).*kH2O.*s/6;
+                           q(3)=(T(t-dt,i,j,k)-T(t-dt,i,j-1,k)).*kH2O.*s/6;
+                           q(4)=(T(t-dt,i,j,k)-T(t-dt,i,j+1,k)).*kH2O.*s/6;
+                           q(5)=(T(t-dt,i,j,k)-T(t-dt,i,j,k+1)).*kH2O.*s/6;
+                           q(6)=(T(t-dt,i,j,k)-T(t-dt,i,j,k-1)).*kH2O.*s/6;
+                           for m=1:1:6
+                               q2=q2+q(m);
+                           end
+                        end
+                        dT=q2./(kH2O.*s/6);
+                        T(t,i,j,k)=T(t-dt,i,j,k)+dT; 
+                end
+                
+            end
+        end
+    end
+    t=t+dt;
+end

@@ -1,0 +1,19 @@
+function sensitivity_T7platform_v2
+
+s=ode45(@deterministic_T7platform,[0,30000],[1e-6,1e-6,1e6]);
+
+global v2
+
+for i=0:2:10
+    v2=1/60*(95+i)./100;
+    sv1=ode45(@deterministic_T7platform_v2,[0,30000],[1e-6,1e-6,1e6]);
+    sv2=(sv1.y(2,:)-s.y(2,:))./s.y(2,:)*100;
+    plot(sv1.x,sv2)
+    hold on
+    grid on
+    set(gca,'fontsize',14)
+    title('the varition with the change of v2')
+    ylabel('the varition(%)')
+    xlabel('Time(s)')
+    legend('95%','97%','99%','101%','103%','105%')
+end

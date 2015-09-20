@@ -1,0 +1,19 @@
+function sensitivity_ferritin_beta2
+
+s=ode45(@deterministic_ferritin,[0,30000],[1e-6,1e-6]);
+
+global beta2
+
+for i=0:2:10
+    beta2=0.00026*(95+i)./100;
+    sv1=ode45(@deterministic_ferritin_bata2,[0,30000],[1e-6,1e-6]);
+    sv2=(sv1.y(2,:)-s.y(2,:))./s.y(2,:)*100;
+    plot(sv1.x,sv2)
+    hold on
+    grid on
+    set(gca,'fontsize',14)
+    title('the varition with the change of beta2')
+    ylabel('the varition(%)')
+    xlabel('Time(s)')
+    legend('95%','97%','99%','101%','103%','105%')
+end

@@ -1,0 +1,21 @@
+function sensitivity_T7platform_km
+
+s=ode45(@deterministic_T7platform,[0,30000],[1e-6,1e-6,1e6]);
+
+global km
+
+for i=0:2:10
+    if i~=8
+    km=0.5*(95+i)./100;
+    sv1=ode45(@deterministic_T7platform_km,[0,30000],[1e-6,1e-6,1e6]);
+    sv2=(sv1.y(2,:)-s.y(2,:))./s.y(2,:)*100;
+    plot(sv1.x,sv2)
+    hold on
+    grid on
+    set(gca,'fontsize',14)
+    title('the varition with the change of km')
+    ylabel('the varition(%)')
+    xlabel('Time(s)')
+    end
+end
+legend('95%','97%','99%','101%','105%')

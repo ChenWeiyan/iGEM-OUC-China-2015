@@ -1,0 +1,148 @@
+function heating_whole_cell_stochastic_expect
+
+clear;
+close all;
+clc;
+
+% Paramerter Initializing
+
+l0=2e-6;
+d0=0.44e-6;
+RhoH2O=1*10^6;
+cH2O=4.2;
+kH2O=1.5e-7;
+slp=8.9e-3;
+
+% Partition Cell
+
+l=l0/200;
+d=d0/100;
+
+a=zeros(200,100,100);
+b=zeros(1,600);% record ferritin's coordinate
+t=600; % time
+dt=1; % time interval
+T=zeros(200,100,100); % temperature initialization
+
+n=0;
+for i=1:1:200
+    for j=1:1:100
+        for k=1:1:100
+            if i>50&&i<151&&j>40&&j<61&&k>40&&k<61
+                a(i,j,k)=0;
+            else
+                a(i,j,k)=normrnd(0,1,1);
+            end
+            if  a(i,j,k)>=3.5
+                a(i,j,k)=1;
+                n=n+1;
+                b(n)=100*i+10*j+k;
+            else
+                a(i,j,k)=0;
+            end
+        end
+    end
+end
+D=zeros(n,3);
+
+% Temperature Calculation
+for tspan=1:dt:t
+    
+    for i=1:1:200
+        for j=1:1:100
+            for k=1:1:100
+                if a(i,j,k)==1
+                    
+                    if tspan==1||tspan==300||tspan==600%tspan==1||tspan==150||tspan==300||tspan==450||tspan==600
+                        figure(fix(tspan/150)+1)
+                        plot3(i,j,k,'k','Marker','.','MarkerSize',10)
+                        set(gca,'FontSize',16);
+                        hold on
+                        grid on
+                        xlabel('The Length of E.coli')
+                        ylabel('The Width of E.coli')
+                        zlabel('The Height of E.coli')
+                    end
+                    T(i,j,k)=T(i,j,k)+slp.*dt./((RhoH2O.*cH2O).*(8.*(pi.*kH2O.*dt).^(3/2)));
+                else
+                    while n~=0
+                        D(n,1)=fix(b(n)/100);
+                        D(n,2)=mod(fix(b(n)/10),10);
+                        D(n,3)=mod(b(n),10);
+                        r=sqrt(((i-D(n,1)).*l).^2+((j-D(n,2)).*d).^2+((k-D(n,3).*d).^2));
+                        T(i,j,k)=T(i,j,k)+slp.*dt./(RhoH2O.*cH2O.*8.*(pi.*kH2O.*dt).^(3/2)).*exp(-(r.^2)./(4.*kH2O.*dt)); 
+                        n=n-1;
+                    end
+
+                end
+            end
+        end
+    end
+    
+    % update ferritin's location
+    achange=a;
+    for i=1:1:200
+        for j=1:1:100
+            for k=1:1:100
+                if a(i,j,k)==1
+                    s1=fix(sqrt(2*dt)*randn);
+                    s2=fix(sqrt(2*dt)*randn);
+                    s3=fix(sqrt(2*dt)*randn);
+                    i_=i+s1;j_=j+s2;k_=k+s3;
+                    if i_<1
+                        i_=-(i_-1);
+                    else if i_>200
+                            i_=i_-200;
+                        end
+                    end
+                    if j_<1
+                        j_=-(j_-1);
+                    else if j_>100
+                            j_=j_-100;
+                        end
+                    end
+                    if k_<1
+                        k_=-(k_-1);
+                    else if k_>100
+                            k_=k_-100;
+                        end
+                    end
+                    if achange(i_,j_,k_)==1
+                        continue;
+                    else
+                        achange(i_,j_,k_)=1;
+                        achange(i,j,k)=0;
+                    end
+                end
+            end
+        end
+    end
+    a=achange;
+    
+    % update ferrtin-location recorder
+    n=0;
+    for i=1:1:200
+        for j=1:1:100
+            for k=1:1:100
+                if a(i,j,k)==1
+                    n=n+1;
+                    b(n)=100*i+10*j+k;
+                end
+            end
+        end
+    end
+    D=zeros(n,3);
+    
+    % plot the figure
+    if tspan==1||tspan==300||tspan==600
+        figure(fix(tspan/150)+6)
+        [x,y]=meshgrid(1:200,1:100);
+        mesh(x,y,T(:,:,30)')
+        axis([0 200 0 100 0 4])
+        xlabel('The Length of E.coli')
+        ylabel('The Width of E.coli')
+        zlabel('Temp Change (℃)')
+        set(gca,'FontSize',16);
+    end
+    
+end 

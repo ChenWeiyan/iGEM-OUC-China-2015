@@ -1,0 +1,185 @@
+function stochastic_model_ferritin
+
+close all;
+clear;
+clc;
+
+% Stochastic Model
+
+alpha=1;
+k1=1/25*alpha;
+k2=1/180;
+sigma1=log(2)/180;
+sigma2=1/7200;
+
+mRNAinitial=0;
+ferritininitial=0;
+numberofrealisations=10000;
+pa1=zeros(600,1);
+pa2=zeros(30,1);
+p2D=zeros(30,600);
+
+for i=1:numberofrealisations
+    mrna=mRNAinitial;
+    ferritin=ferritininitial;
+    t=0;
+    k=1;
+    mRNA(1,i)=mrna;
+    Ferritin(1,i)=ferritin;
+    time(1,i)=0;
+while k<=10000
+    r1=rand;
+    r2=rand;
+    a1=k1;
+    a2=mrna*k2;
+    a3=mrna*sigma1;
+    a4=ferritin*sigma2;
+    a0=a1+a2+a3+a4;
+    tao=log(1/r1)/a0;
+    t=t+tao;
+    if r2<(a1/a0)
+        mrna=mrna+1;
+    end
+    if r2>=(a1/a0)&&r2<((a1+a2)/a0)
+        ferritin=ferritin+1;
+    end
+    if r2>=((a1+a2)/a0)&&r2<((a1+a2+a3)/a0)
+        mrna=mrna-1;
+    end
+    if r2>=((a1+a2+a3)/a0)
+        ferritin=ferritin-1;
+    end
+    k=k+1;
+    mRNA(k,i)=mrna;
+    Ferritin(k,i)=ferritin;
+    time(k,i)=t;
+end
+if ((ferritin>0)&&(ferritin<601))
+pa1(ferritin)=pa1(ferritin)+1;
+end
+if ((mrna>0)&&(mrna<31))
+pa2(mrna)=pa2(mrna)+1;
+end
+if (((mrna>0)&&(mrna<31))&&((ferritin>0)&&(ferritin<601)))
+p2D(mrna,ferritin)=p2D(mrna,ferritin)+1;
+end;
+end
+
+pa1=pa1/numberofrealisations;
+pa2=pa2/numberofrealisations;
+p2D=p2D/numberofrealisations;
+
+figure(1)
+h=stairs(time(:,1),mRNA(:,1));
+set(h,'Color','r','Linewidth',1);
+hold on;
+h=stairs(time(:,2),mRNA(:,2));
+set(h,'Color','m','Linewidth',1);
+hold on;
+h=stairs(time(:,3),mRNA(:,3));
+set(h,'Color','b','Linewidth',1);
+hold on;
+h=stairs(time(:,4),mRNA(:,4));
+set(h,'Color','g','Linewidth',1);
+hold on;
+h=stairs(time(:,5),mRNA(:,5));
+set(h,'Color','c','Linewidth',1);
+hold on;
+h=stairs(time(:,6),mRNA(:,6));
+set(h,'Linewidth',1);
+hold on;
+h=stairs(time(:,7),mRNA(:,7));
+set(h,'Linewidth',1);
+hold on;
+h=stairs(time(:,8),mRNA(:,8));
+set(h,'Linewidth',1);
+hold on;
+h=stairs(time(:,9),mRNA(:,9));
+set(h,'Linewidth',1);
+hold on;
+h=stairs(time(:,10),mRNA(:,10));
+set(h,'Linewidth',1);
+hold on;
+grid on;
+set(gca,'FontSize',16);
+
+figure(2)
+h=stairs(time(:,1),Ferritin(:,1));
+set(h,'Color','r','Linewidth',1);
+hold on;
+h=stairs(time(:,2),Ferritin(:,2));
+set(h,'Color','m','Linewidth',1);
+hold on;
+h=stairs(time(:,3),Ferritin(:,3));
+set(h,'Color','b','Linewidth',1);
+hold on;
+h=stairs(time(:,4),Ferritin(:,4));
+set(h,'Color','g','Linewidth',1);
+hold on;
+h=stairs(time(:,5),Ferritin(:,5));
+set(h,'Color','c','Linewidth',1);
+hold on;
+h=stairs(time(:,6),Ferritin(:,6));
+set(h,'Linewidth',1);
+hold on;
+h=stairs(time(:,7),Ferritin(:,7));
+set(h,'Linewidth',1);
+hold on;
+h=stairs(time(:,8),Ferritin(:,8));
+set(h,'Linewidth',1);
+hold on;
+h=stairs(time(:,9),Ferritin(:,9));
+set(h,'Linewidth',1);
+hold on;
+h=stairs(time(:,10),Ferritin(:,10));
+set(h,'Linewidth',1);
+hold on;
+grid on;
+set(gca,'FontSize',16);
+
+figure(3);
+set(gca,'Fontsize',16);
+bar(pa1);
+grid on;
+
+figure(4);
+set(gca,'Fontsize',16);
+bar(pa2);
+grid on;
+
+figure(5);
+set(gca,'Fontsize',20);
+contourf(p2D');
+xlabel('number of mrna molecules');
+ylabel('number of ferritin molecules');
+axis([1 30 1 500 ]);
+shading flat;
+view(0,90);
+box on;
+colorbar;
+
+% Calculate The Noise
+
+Mrna=0;
+for i=1:30
+    Mrna=Mrna+i*pa2(i);
+end
+Vrna=0;
+for i=1:30
+    Vrna=Vrna+(i-Mrna)^2*pa2(i);
+end
+Mrna
+Vrna
+betarna=Vrna/(Mrna^2)
+
+Mferritin=0;
+for i=1:600
+    Mferritin=Mferritin+i*pa1(i);
+end
+Vferritin=0;
+for i=1:600
+    Vferritin=Vferritin+(i-Mferritin)^2*pa1(i);
+end
+Mferritin
+Vferritin
+betaferritin=Vferritin/(Mferritin^2)

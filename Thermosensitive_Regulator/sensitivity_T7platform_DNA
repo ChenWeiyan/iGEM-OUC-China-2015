@@ -1,0 +1,19 @@
+function sensitivity_T7platform_DNA
+
+s=ode45(@deterministic_T7platform,[0,30000],[1e-6,1e-6,1e6]);
+
+global DNA
+
+for i=0:2:10
+    DNA=10*(95+i)./100;
+    sv1=ode45(@deterministic_T7platform_DNA,[0,30000],[1e-6,1e-6,1e6]);
+    sv2=(sv1.y(2,:)-s.y(2,:))./s.y(2,:)*100;
+    plot(sv1.x,sv2)
+    hold on
+    grid on
+    set(gca,'fontsize',14)
+    title('the varition with the change of DNA')
+    ylabel('the varition(%)')
+    xlabel('Time(s)')
+    legend('95%','97%','99%','101%','103%','105%')
+end

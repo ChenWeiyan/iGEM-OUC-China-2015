@@ -1,0 +1,74 @@
+function heating_whole_cell_fixed_2
+
+clear;
+close all;
+clc;
+
+% Paramerter Initializing
+
+l0=2e-6;    %Length of E.coli
+d0=0.44e-6; %Width and Hight of E.coli
+l=l0/200;  %Length of every single cuboid
+d=d0/100;   %Width and Height of every single cuboid
+kH2O=1.5e-7;
+RhoH2O=1e6;
+cH2O=4.2;
+slp=8.9e-3;% SLP W/g
+
+a=zeros(200,100,100);
+b=zeros(1,1500);
+
+n=0; % count number
+for i=1:1:200
+    for j=1:1:100
+        for k=1:1:100
+            if i>50&&i<151&&j>40&&j<61&&k>40&&k<61
+                a(i,j,k)=0;
+            else
+                a(i,j,k)=randn;
+            end
+            if  a(i,j,k)>=3.1
+                a(i,j,k)=1;
+                n=n+1;
+                b(n)=100*i+10*j+k;
+            else
+                a(i,j,k)=0;
+            end
+        end
+    end
+end
+m=n;
+
+
+T=zeros(200,100,100);
+D=zeros(n,3);
+t=10;
+
+% temperature calculation
+
+for i=1:1:200
+        for j=1:1:100
+            for k=1:1:100
+                if a(i,j,k)==1
+                    plot3(i,j,k,'k','Marker','.','MarkerSize',10)
+                    hold on
+                    grid on
+                    T(i,j,k)=T(i,j,k)+slp.*t./((RhoH2O.*cH2O).*(8.*(pi.*kH2O.*t).^(3/2)));
+                else
+                    while n~=0
+                        D(n,1)=fix(b(n)/100);
+                        D(n,2)=mod(fix(b(n)/10),10);
+                        D(n,3)=mod(b(n),10);
+                        r=sqrt(((i-D(n,1)).*l).^2+((j-D(n,2)).*d).^2+((k-D(n,3).*d).^2));
+                        T(i,j,k)=T(i,j,k)+slp.*t./(RhoH2O.*cH2O.*8.*(pi.*kH2O.*t).^(3/2)).*exp(-(r.^2)./(4.*kH2O.*t));
+                        n=n-1;
+                    end
+                end
+                n=m;
+            end
+        end
+end
+
+figure(2)
+[x,y]=meshgrid(1:200,1:100);
+mesh(x,y,T(:,:,5)')

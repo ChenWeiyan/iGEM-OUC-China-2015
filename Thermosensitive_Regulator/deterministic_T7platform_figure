@@ -1,0 +1,27 @@
+% Attention! Download file "deterministic_T7platform" before this
+
+function deterministic_T7platform_figure
+
+s=ode45(@deterministic_T7platform,[0,30000],[1e-6,1e-6,1e-6]);
+
+figure(1) 
+plot(s.x,s.y(1,:))
+grid on
+title('T7 polymerase in time scale')
+ylabel('The concentration of T7 polymerase(/cell)')
+xlabel('Time(s)')
+
+figure(2)
+plot(s.x,s.y(2,:))
+grid on
+title('mRNA of GFP in time scale')
+ylabel('The concentration of the mRNA of GFP(/cell)')
+xlabel('Time(s)')
+
+figure(3)
+plot(s.x,s.y(3,:))
+axis([0,30000,0,1400] )
+grid on
+title('GFP in time scale')
+ylabel('The concentration of GFP(/cell)')
+xlabel('Time(s)')

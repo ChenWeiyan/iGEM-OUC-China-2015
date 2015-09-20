@@ -1,0 +1,22 @@
+function sensitivity_T7platform_alpha
+
+s=ode45(@deterministic_T7platform,[0,30000],[1e-6,1e-6,1e6]);
+
+global alpha;
+
+plot(s.x,s.y(2,:),'LineWidth',2)
+hold on
+
+for i=0.2:0.1:0.7
+    
+    alpha=i;
+    
+    s1=ode45(@deterministic_T7platform13,[0,30000],[1e-6,1e-6,1e-6]);
+    plot(s1.x,s1.y(2,:),'LineWidth',2)
+    grid on
+    hold on
+    set(gca,'fontsize',16)
+    ylabel('mRNA Expression Quantity')
+    xlabel('Time(s)')
+end
+legend('alpha =10%','alpha =20%','alpha =30%','alpha =40%','alpha =50%','alpha =60%','alpha =70%')
